@@ -1,6 +1,9 @@
 const express = require("express")
 const router = require("./router/router")
-//const session = require("express-session")
+const session = require("express-session")
+const knexSessionStore = require("connect-session-knex")(session)
+const db = require("./data/config")
+
 
 const server = express()
 const port = 2000

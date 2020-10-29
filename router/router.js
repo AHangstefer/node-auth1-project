@@ -15,7 +15,7 @@ router.get("/users", restrict(), async (req, res, next)=> {
     }
 })
 
-router.post("/users", async (req, res, next)=> {
+router.post("/register", async (req, res, next)=> {
     try{
 
         const {username, password} =req.body
@@ -29,7 +29,7 @@ router.post("/users", async (req, res, next)=> {
 
         const newUser = await Users.add({
             username,
-            password:await bycrypt.hash(password, 10)
+            password:await bycrypt.hash(password, 14)
         })
 
         res.status(201).json(newUser)
@@ -39,9 +39,37 @@ router.post("/users", async (req, res, next)=> {
     }
 })
 
-// router.post("/login")
+router.post("/login", async (req, res, next)=> {
+    try{
+        const {username, password} = req.body
+        const user = await Users.findBy({ username }).first()
 
-// router.post("/register")
+        if(!user){
+            return res.status(401).json({
+                message: "That user does not exist"
+            })
+        }
+
+        const passowrdValid = await bycrypt.compare(password, user.password)
+
+            if(!passowrdValid){
+                return res.status(401).json({
+                    message: "This password is invalid"
+                })
+            }
+
+            req.session.user = user
+
+            res.json({
+                message: `Welcome ${user.username}!`
+            })
+    }
+    catch(err){
+        next(err)
+    }
+})
+
+
 
 
 module.exports = router
