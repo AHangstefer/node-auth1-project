@@ -19,7 +19,9 @@ router.post("/register", async (req, res, next)=> {
     try{
 
         const {username, password} =req.body
+        console.log("outside register", username)
         const user = await Users.findBy({ username }).first()
+        console.log("inside register", username)
 
         if (user) {
             return res.status(409).json({
@@ -41,8 +43,12 @@ router.post("/register", async (req, res, next)=> {
 
 router.post("/login", async (req, res, next)=> {
     try{
+        //console.log( req.body )
         const {username, password} = req.body
+        console.log( req.body )
+        //console.log("outside log in", username)
         const user = await Users.findBy({ username }).first()
+        //console.log("inside log In", username)
 
         if(!user){
             return res.status(401).json({
